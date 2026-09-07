@@ -15,23 +15,29 @@ jobs:
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-          
-          # Auto-login fix karne ke liye
-          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name "DefaultUserName" -Value "runneradmin"
-          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name "DefaultPassword" -Value "Password123!"
-          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name "AutoAdminLogon" -Value "1"
 
       - name: Install and Connect to Tailscale
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
+          # Tailscale latest MSI download link fetch karke install karein
+          Write-Host "Fetching Tailscale installer..."
           $webpage = Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/" -UseBasicParsing
           $msiLink = "https://pkgs.tailscale.com/stable/" + ($webpage.links | Where-Object href -like "*amd64.msi" | Select-Object -ExpandProperty href | Select-Object -First 1)
+          
+          Write-Host "Downloading from: $msiLink"
           Invoke-WebRequest -Uri $msiLink -OutFile "tailscale.msi"
+          
+          Write-Host "Installing Tailscale..."
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i tailscale.msi /quiet /norestart" -Wait
+          
+          # Tailscale command ko direct call karne ke liye path set karein
           $tailscaleExe = "$env:ProgramFiles\Tailscale\tailscale.exe"
           & $tailscaleExe up --authkey="${env:TAILSCALE_AUTHKEY}" --accept-routes
+          
+          Write-Host "Tailscale connected successfully!"
 
       - name: Keep RDP Alive
         run: |
+          Write-Host "RDP is ready! Connect using your Tailscale IP."
           Start-Sleep -Seconds 21600
