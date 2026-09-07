@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Basic packages aur XFCE desktop install karna
+# XFCE desktop, VNC aur Firefox ki zaroori dependencies install karna
 RUN apt-get update && apt-get install -y \
     xfce4 \
     xfce4-goodies \
@@ -14,9 +14,15 @@ RUN apt-get update && apt-get install -y \
     curl \
     bzip2 \
     net-tools \
+    libgtk-3-0 \
+    libdbus-glib-1-2 \
+    libxt6 \
+    libglib2.0-0 \
+    libasound2 \
+    libx11-xcb1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Firefox ko direct Mozilla se download aur install karna (Snap Error se bachne ke liye)
+# Official Firefox ko direct download aur link karna
 RUN wget -O /tmp/firefox.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
     tar -xjf /tmp/firefox.tar.bz2 -C /opt/ && \
     ln -s /opt/firefox/firefox /usr/bin/firefox && \
