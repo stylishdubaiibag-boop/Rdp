@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     xfce4 \
     xfce4-goodies \
+    xfce4-terminal \
     tightvncserver \
     novnc \
     websockify \
