@@ -21,11 +21,20 @@ jobs:
           # Firewall mein RDP allow karein
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TAILSCALE_TAUTHKEY }}
-          version: latest
+      - name: Install and Connect to Tailscale
+        env:
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+        run: |
+          # Tailscale download aur install karein
+          Write-Host "Downloading Tailscale..."
+          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.msi" -OutFile "tailscale-setup.msi"
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i tailscale-setup.msi /quiet /norestart" -Wait
+          
+          # Tailscale start karein aur AuthKey se login karein
+          $tailscalePath = "${{ env.ProgramFiles }}\Tailscale\tailscale.exe"
+          & $tailscalePath up --authkey="${env:TAILSCALE_AUTHKEY}" --accept-routes
+          
+          Write-Host "Tailscale connected successfully!"
 
       - name: Keep RDP Alive
         run: |
