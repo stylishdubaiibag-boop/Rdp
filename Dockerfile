@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# XFCE desktop, VNC aur Chrome ki zaroori dependencies install karna
+# XFCE desktop, VNC aur chaar mukhtalif browsers (Chrome, Chromium, Firefox, Epiphany) ki installation
 RUN apt-get update && apt-get install -y \
     xfce4 \
     xfce4-goodies \
@@ -17,9 +17,12 @@ RUN apt-get update && apt-get install -y \
     libu2f-udev \
     libvulkan1 \
     libgbm1 \
+    chromium-browser \
+    firefox \
+    epiphany-browser \
     && rm -rf /var/lib/apt/lists/*
 
-# Google Chrome ka official stable package direct download aur forcefully link karna
+# Google Chrome ka official stable package download aur setup
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get update && \
     apt-get install -y ./google-chrome-stable_current_amd64.deb && \
