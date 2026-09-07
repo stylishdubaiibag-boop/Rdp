@@ -25,9 +25,12 @@ jobs:
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          # Tailscale download aur install karein
+          # Tailscale official silent installer download aur run karein
           Write-Host "Downloading Tailscale..."
-          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.msi" -OutFile "tailscale-setup.msi"
+          $installerUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-amd64.msi"
+          Invoke-WebRequest -Uri $installerUrl -OutFile "tailscale-setup.msi"
+          
+          Write-Host "Installing Tailscale..."
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i tailscale-setup.msi /quiet /norestart" -Wait
           
           # Tailscale start karein aur AuthKey se login karein
