@@ -19,12 +19,12 @@ RUN apt-get update && apt-get install -y \
     libgbm1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Google Chrome ka official stable package direct download aur install karna
+# Google Chrome ka official stable package direct download aur forcefully link karna
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get update && \
     apt-get install -y ./google-chrome-stable_current_amd64.deb && \
     rm google-chrome-stable_current_amd64.deb && \
-    ln -s /usr/bin/google-chrome-stable /usr/bin/x-www-browser
+    ln -sf /usr/bin/google-chrome-stable /usr/bin/x-www-browser
 
 EXPOSE 8080
 
