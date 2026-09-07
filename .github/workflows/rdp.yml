@@ -31,9 +31,9 @@ jobs:
           Write-Host "Installing Tailscale..."
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i tailscale.msi /quiet /norestart" -Wait
           
-          # Tailscale start karein aur AuthKey se login karein
-          $tailscalePath = "${{ env.ProgramFiles }}\Tailscale\tailscale.exe"
-          & $tailscalePath up --authkey="${env:TAILSCALE_AUTHKEY}" --accept-routes
+          # Tailscale command ko direct call karne ke liye path set karein
+          $tailscaleExe = "$env:ProgramFiles\Tailscale\tailscale.exe"
+          & $tailscaleExe up --authkey="${env:TAILSCALE_AUTHKEY}" --accept-routes
           
           Write-Host "Tailscale connected successfully!"
 
