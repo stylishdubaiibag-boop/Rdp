@@ -11,23 +11,22 @@ jobs:
     steps:
       - name: Set Password and Enable RDP
         run: |
-          # runneradmin ka password set karein
           net user runneradmin "Password123!"
-          
-          # Remote Desktop enable karein aur Network Level Authentication off karein
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0
-          
-          # Firewall mein RDP allow karein
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
       - name: Install and Connect to Tailscale
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          # Tailscale official installer download aur silent install karein
-          Write-Host "Downloading Tailscale..."
-          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-amd64.msi" -OutFile "tailscale.msi"
+          # Tailscale latest MSI download link fetch karke install karein
+          Write-Host "Fetching Tailscale installer..."
+          $webpage = Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/" -UseBasicParsing
+          $msiLink = "https://pkgs.tailscale.com/stable/" + ($webpage.links | Where-Object href -like "*amd64.msi" | Select-Object -ExpandProperty href | Select-Object -First 1)
+          
+          Write-Host "Downloading from: $msiLink"
+          Invoke-WebRequest -Uri $msiLink -OutFile "tailscale.msi"
           
           Write-Host "Installing Tailscale..."
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i tailscale.msi /quiet /norestart" -Wait
