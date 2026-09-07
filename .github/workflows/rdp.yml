@@ -9,10 +9,10 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - name: Set Administrator Password and Enable RDP
+      - name: Set Password and Enable RDP
         run: |
-          # Yahan apna pasandida aasan password set karein
-          net user Administrator "Password123!"
+          # runneradmin ka password set karein
+          net user runneradmin "Password123!"
           
           # Remote Desktop enable karein aur Network Level Authentication off karein
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
@@ -24,7 +24,7 @@ jobs:
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          authkey: ${{ secrets.TAILSCALE_TAUTHKEY }}
           version: latest
 
       - name: Keep RDP Alive
