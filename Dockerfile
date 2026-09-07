@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# XFCE desktop, VNC aur Firefox ki zaroori dependencies install karna
+# XFCE desktop, VNC aur Chrome ki zaroori dependencies install karna
 RUN apt-get update && apt-get install -y \
     xfce4 \
     xfce4-goodies \
@@ -14,20 +14,17 @@ RUN apt-get update && apt-get install -y \
     curl \
     bzip2 \
     net-tools \
-    libgtk-3-0 \
-    libdbus-glib-1-2 \
-    libxt6 \
-    libglib2.0-0 \
-    libasound2 \
-    libx11-xcb1 \
+    libu2f-udev \
+    libvulkan1 \
+    libgbm1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Official Firefox ko redirect (-L) ke sath download aur link karna
-RUN wget -L -O /tmp/firefox.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
-    tar -xjf /tmp/firefox.tar.bz2 -C /opt/ && \
-    ln -s /opt/firefox/firefox /usr/bin/firefox && \
-    ln -s /opt/firefox/firefox /usr/bin/x-www-browser && \
-    rm /tmp/firefox.tar.bz2
+# Google Chrome ka official stable package direct download aur install karna
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get update && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb && \
+    ln -s /usr/bin/google-chrome-stable /usr/bin/x-www-browser
 
 EXPOSE 8080
 
