@@ -1,0 +1,33 @@
+name: RDP via Tailscale
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Set Administrator Password and Enable RDP
+        run: |
+          # Yahan apna pasandida aasan password set karein
+          net user Administrator "Password123!"
+          
+          # Remote Desktop enable karein aur Network Level Authentication off karein
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0
+          
+          # Firewall mein RDP allow karein
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          version: latest
+
+      - name: Keep RDP Alive
+        run: |
+          Write-Host "RDP is ready! Connect using your Tailscale IP."
+          Start-Sleep -Seconds 21600
