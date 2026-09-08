@@ -3,11 +3,13 @@ FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 # Environment variables setup
 ENV DEBIAN_FRONTEND=noninteractive
 
-# System dependencies aur browser/AppImage ke liye required libraries install karein
+# System dependencies aur required libraries install karein
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
     gnupg \
+    git \
+    software-properties-common \
     libfuse2 \
     libgtk-3-0 \
     libnotify4 \
@@ -19,6 +21,20 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libnspr4 \
     libasound2 \
+    sqlite3 \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python 3 aur Pip install karein
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.js (LTS version) aur npm install karein
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Google Chrome official repo add karke install karein
