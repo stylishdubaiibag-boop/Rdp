@@ -1,8 +1,8 @@
-FROM dorowu/ubuntu-desktop-lxde-vnc:focal
+FROM dorowu/ubuntu-desktop-lxde-vnc:jammy
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# System tools, Python, SQLite aur WhatsApp dependencies install karein
+# Ubuntu repositories ke source list ko fix karke dependencies install karein
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -13,15 +13,24 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-dev \
     libfuse2 \
-    libgtk-3-0 \
-    libnotify4 \
-    libnss3 \
-    libxss1 \
-    libxtst6 \
-    xdg-utils \
-    libsecret-1-0 \
     libglib2.0-0 \
+    libnss3 \
     libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libnspr4 \
+    libpango-1.0-0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm-dev \
     libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
