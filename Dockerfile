@@ -11,9 +11,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# RDP user
 RUN useradd -m -s /bin/bash rdpuser && \
-    echo 'rdpuser:ChangeMe123!' | chpasswd && \
+    echo 'rdpuser:password123' | chpasswd && \
     adduser rdpuser sudo
 
 RUN echo "startxfce4" > /home/rdpuser/.xsession && \
