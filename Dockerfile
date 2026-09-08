@@ -1,37 +1,38 @@
-FROM ubuntu:22.04
+FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 
+# Environment variables setup
 ENV DEBIAN_FRONTEND=noninteractive
 
-# XFCE desktop, VNC aur chaar mukhtalif browsers (Chrome, Chromium, Firefox, Epiphany) ki installation
+# System dependencies aur browser/AppImage ke liye required libraries install karein
 RUN apt-get update && apt-get install -y \
-    xfce4 \
-    xfce4-goodies \
-    xfce4-terminal \
-    tightvncserver \
-    novnc \
-    websockify \
     wget \
     curl \
-    bzip2 \
-    net-tools \
-    libu2f-udev \
-    libvulkan1 \
-    libgbm1 \
-    chromium-browser \
-    firefox \
-    epiphany-browser \
+    gnupg \
+    libfuse2 \
+    libgtk-3-0 \
+    libnotify4 \
+    libnss3 \
+    libxss1 \
+    libxtst6 \
+    xdg-utils \
+    libsecret-1-0 \
+    libglib2.0-0 \
+    libnspr4 \
+    libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Google Chrome ka official stable package download aur setup
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get update && \
-    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
-    rm google-chrome-stable_current_amd64.deb && \
-    ln -sf /usr/bin/google-chrome-stable /usr/bin/x-www-browser
+# Google Chrome official repo add karke install karein
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get update && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
+# WhatsApp for Linux AppImage download karke system path me set karein
+RUN wget -O /usr/local/bin/whatsapp "https://github.com/rafostar/whatsapp-for-linux/releases/download/v1.6.0/whatsapp-for-linux-1.6.0-x86_64.AppImage" \
+    && chmod +x /usr/local/bin/whatsapp
 
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+# Expose VNC and web ports
+EXPOSE 80
 
-CMD ["/start.sh"]
+# Default command to run desktop environment
+CMD ["/startup.sh"]
