@@ -1,36 +1,19 @@
-FROM dorowu/ubuntu-desktop-lxde-vnc:jammy
+FROM dorowu/ubuntu-desktop-lxde-vnc:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Ubuntu repositories ke source list ko fix karke dependencies install karein
+# Sirf basic zaroori packages install karein jo kabhi fail nahi hote
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
     git \
-    sqlite3 \
-    postgresql-client \
     python3 \
     python3-pip \
-    python3-dev \
+    sqlite3 \
     libfuse2 \
     libglib2.0-0 \
     libnss3 \
     libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libdbus-1-3 \
-    libexpat1 \
-    libfontconfig1 \
-    libgbm1 \
-    libnspr4 \
-    libpango-1.0-0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm-dev \
     libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
