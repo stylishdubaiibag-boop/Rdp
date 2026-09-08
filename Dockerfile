@@ -1,40 +1,22 @@
-```dockerfile
-FROM ubuntu:24.04
+FROM dorowu/ubuntu-desktop-lxde-vnc:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DISPLAY=:10
 
-# Update + desktop + RDP + browser
+# Sirf zaroori system packages install karein
 RUN apt-get update && apt-get install -y \
-    xfce4 \
-    xfce4-goodies \
-    xrdp \
-    dbus-x11 \
-    sudo \
-    chromium-browser \
-    && apt-get clean \
+    wget \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    sqlite3 \
+    libfuse2 \
+    libglib2.0-0 \
+    libnss3 \
+    libnspr4 \
+    libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# RDP user
-RUN useradd -m -s /bin/bash rdpuser && \
-    echo 'rdpuser:password123' | chpasswd && \
-    usermod -aG sudo rdpuser
+EXPOSE 80
 
-# XFCE session
-RUN echo "startxfce4" > /home/rdpuser/.xsession && \
-    chown rdpuser:rdpuser /home/rdpuser/.xsession
-
-# Configure xrdp
-RUN sed -i 's/^port=3389/port=3389/' /etc/xrdp/xrdp.ini
-
-# Create startup script
-RUN printf '#!/bin/bash\n\
-service dbus start\n\
-service xrdp start\n\
-tail -f /dev/null\n' > /start.sh && \
-    chmod +x /start.sh
-
-EXPOSE 3389
-
-CMD ["/start.sh"]
-```
+CMD ["/startup.sh"]
